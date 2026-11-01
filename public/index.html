@@ -554,8 +554,9 @@ async function post(body){const r=await fetch(API,{method:'POST',headers:{'conte
 function writeMine(){wq=wq.then(()=>post({}).catch(()=>false));return wq}
 function submitOnline(fish,tot){wq=wq.then(()=>post({fish,score:tot}).catch(()=>false));return wq}
 function lbRows(f){return Object.entries(board).map(([id,v])=>{const b=safeBest(v.best);const sc=f==='__all'?Object.values(b).reduce((a,x)=>a+x,0):(b[f]||0);return{id,nick:cleanNick(v.nick)||'無名刀手',sc,n:Object.keys(b).length,plays:Math.round(+v.plays||0)}}).filter(r=>r.sc>0).sort((a,b)=>b.sc-a.sc)}
+function scoreRank(f,tot){const r=lbRows(f).filter(x=>x.id!==UID);return [r.filter(x=>x.sc>tot).length+1,r.length+1]}
 function myRank(f){const r=lbRows(f);const i=r.findIndex(x=>x.id===UID);return i<0?null:[i+1,r.length]}
-function showLB(){lbOpen=true;$('ov').classList.remove('hide');renderLB();loadBoard()}
+function showLB(){lbFish=L.name;lbOpen=true;$('ov').classList.remove('hide');renderLB();loadBoard()}
 function renderLB(){
   const ov=$('ov');if(!lbOpen)return;
   const focusNick=document.activeElement&&document.activeElement.id==='lbNick';if(focusNick)return;
@@ -568,7 +569,7 @@ function renderLB(){
   ov.innerHTML=`<div class="card"><h2>🏆 刀工排行榜</h2>
   ${status?`<p class="lbstat">${status}</p>`:''}
   ${UID?`<div class="nickrow"><input id="lbNick" maxlength="14" placeholder="你嘅花名" value="${esc(nick)}"><button class="pri" id="lbSave">儲存花名</button></div>`:''}
-  <select id="lbSel"><option value="__all">總排行（各款魚最高分加埋）</option>${LEVELS.map(l=>`<option value="${esc(l.name)}"${lbFish===l.name?' selected':''}>${l.boss?'👑 ':''}${l.name}</option>`).join('')}</select>
+  <select id="lbSel">${LEVELS.map(l=>`<option value="${esc(l.name)}"${lbFish===l.name?' selected':''}>${l.boss?'👑 ':''}${l.name}</option>`).join('')}</select>
   ${mr?`<p class="lbme">你排第 <b>${mr[0]}</b> 名（共 ${mr[1]} 人）</p>`:''}
   <div class="tw"><table class="rec"><tr><th>名次</th><th>花名</th><th>分數</th><th>${lbFish==='__all'?'劏過':'等級'}</th></tr>${list}</table></div>
   <div class="cbtns"><button class="pri" id="lbBack">返回揀魚</button></div></div>`;
@@ -597,10 +598,10 @@ function showRecords(){
 }
 function showResult(){
   const tot=s1+s2+s3;const isBest=tot>(best[L.name]||0);if(isBest){best[L.name]=tot;try{localStorage.setItem('fishKnifeBest2',JSON.stringify(best))}catch(e){}}
-  const rank=rankOf(tot);submitOnline(L.name,tot).then(ok=>{const e=$('rOnline');if(!e)return;if(ok){const r=myRank(L.name);e.textContent=r?`🏆 已上傳！你喺${L.name}排第 ${r[0]} 名（共 ${r[1]} 人）`:'🏆 已上傳排行榜';}else e.textContent=''});hist.push({f:L.name,t:tot,a:s1,b:s2,c:s3,cl:+cleanV.toFixed(3),y:+yieldV.toFixed(3),e:+evenV.toFixed(3),u:+util.toFixed(3),d:Date.now()});saveHist();
+  const rank=rankOf(tot);submitOnline(L.name,tot).then(ok=>{const e=$('rOnline');if(!e)return;if(ok||Object.keys(board).length){const r=scoreRank(L.name,tot);e.innerHTML=`🏆 今次 ${tot} 分<br>喺${L.name}排第 <b style="font-size:26px;color:#ffe08a">${r[0]}</b> 名（共 ${r[1]} 人）`}else e.textContent='（連唔到排行榜，暫時未有排名）'});hist.push({f:L.name,t:tot,a:s1,b:s2,c:s3,cl:+cleanV.toFixed(3),y:+yieldV.toFixed(3),e:+evenV.toFixed(3),u:+util.toFixed(3),d:Date.now()});saveHist();
   const ac2=auntieComment(tot,evenV);const ov=$('ov');ov.classList.remove('hide');
   ov.innerHTML=`<div class="card" style="text-align:center"><h2>${L.name} · 完成！</h2><div class="stars">${rank[1]}</div><div class="big">${tot}</div><div class="rank">${rank[0]}</div>${isBest?'<div style="color:#b3261e;font-weight:900;margin-top:6px">🎉 新紀錄！</div>':''}
-  <div id="rOnline" style="font-size:13px;font-weight:800;color:#8a5a00;min-height:18px;margin-top:4px">${'上傳緊排行榜…'}</div><div class="aunt">${auntieSVG(ac2.mood)}<div class="bubble">${ac2.html}<small>— 街市熟客 陳師奶</small></div></div><table class="rows"><tr><td>① 起鱗（清潔度 ${Math.floor(cleanV*100)}%）</td><td>${s1}/300</td></tr><tr><td>② 起骨（出肉率 ${(yieldV*100).toFixed(1)}%）</td><td>${s2}/400</td></tr><tr><td>③ 切件（${pieces.map(w=>Math.round(w)).join(' / ')}g）</td><td>${s3}/300</td></tr><tr><td><b>魚肉利用率</b></td><td>${(util*100).toFixed(1)}%</td></tr></table>
+  <div id="rOnline" style="font-size:17px;font-weight:900;color:#fff;background:#d9452b;border:3px solid #2b1e12;border-radius:12px;padding:8px 10px;margin:10px 0 2px;min-height:24px;line-height:1.4">${'上傳緊排行榜…'}</div><div class="aunt">${auntieSVG(ac2.mood)}<div class="bubble">${ac2.html}<small>— 街市熟客 陳師奶</small></div></div><table class="rows"><tr><td>① 起鱗（清潔度 ${Math.floor(cleanV*100)}%）</td><td>${s1}/300</td></tr><tr><td>② 起骨（出肉率 ${(yieldV*100).toFixed(1)}%）</td><td>${s2}/400</td></tr><tr><td>③ 切件（${pieces.map(w=>Math.round(w)).join(' / ')}g）</td><td>${s3}/300</td></tr><tr><td><b>魚肉利用率</b></td><td>${(util*100).toFixed(1)}%</td></tr></table>
   <div class="socrow"><a class="igb" href="${IG_URL}" target="_blank" rel="noopener">📸 Follow 我哋 IG</a>${BMC_URL?`<a class="bmc" href="${BMC_URL}" target="_blank" rel="noopener">☕ 請陳師奶飲杯咖啡</a>`:''}</div><div class="cbtns"><button class="pri" id="rAgain">再劏一條</button>${lvl<LEVELS.length-1?'<button class="pri" id="rNext">下一條魚 →</button>':''}<button class="sec" id="rLB" style="background:#c8901a;color:#fff">🏆 排行榜</button><button class="sec" id="rRec" style="background:#fff;color:#2b1e12;border:2px solid #2b1e12">📒 紀錄簿</button><button class="sec" id="rMenu" style="background:#2b1e12;color:#f6eedd">揀魚</button></div></div>`;
   $('rAgain').onclick=startLevel;if($('rNext'))$('rNext').onclick=()=>{lvl++;startLevel()};$('rMenu').onclick=showMenu;$('rRec').onclick=showRecords;$('rLB').onclick=showLB;
   btn('btnA');
