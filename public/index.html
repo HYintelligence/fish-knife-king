@@ -182,16 +182,16 @@ function buildFins(){const S=L.shape||{},F=[tailPath()],H0=L.H;
   else if(dt==='double'){const a=finAt(.33),b=finAt(.47);const p=new Path2D();p.moveTo(a,topY(a)+4);p.quadraticCurveTo(a+8,topY(a)-H0*.3,a+(b-a)*.3,topY(a)-H0*.28);p.quadraticCurveTo(b-14,topY(b)-H0*.06,b,topY(b)+3);p.closePath();p._bb={ox:(a+b)/2,oy:topY(a)+14,x0:a,x1:b,ey:topY(a)-H0*.35};F.push(p);
     const c=finAt(.56),d=finAt(.66),h=H0*(S.big2?.62:.3);const q=new Path2D();q.moveTo(c,topY(c)+4);q.quadraticCurveTo(c+6,topY(c)-h*.6,c+16,topY(c)-h);q.quadraticCurveTo(c+16,topY(c)-h*.35,d,topY(d)+3);q.closePath();q._bb={ox:c+8,oy:topY(c)+14,x0:c,x1:c+22,ey:topY(c)-h};F.push(q)}
   else if(dt==='sail'){const a=finAt(.17),b=finAt(.44);const p=new Path2D();p.moveTo(a,topY(a)+4);p.quadraticCurveTo(a+4,topY(a)-H0*.5,a+18,topY(a)-H0*.95);p.quadraticCurveTo(a+26,topY(a)-H0*.3,b,topY(b)+3);p.closePath();p._bb={ox:a+14,oy:topY(a)+16,x0:a,x1:a+40,ey:topY(a)-H0*.95};F.push(p);
-    const c=finAt(.86);const q=new Path2D();q.moveTo(c,topY(c)+2);q.quadraticCurveTo(c+4,topY(c)-14,c+12,topY(c)-18);q.quadraticCurveTo(c+12,topY(c)-6,c+20,topY(c+20)+2);q.closePath();F.push(q)}
+    const c=finAt(.86);const q=new Path2D();q.moveTo(c,topY(c)+2);q.quadraticCurveTo(c+4,topY(c)-14,c+12,topY(c)-18);q.quadraticCurveTo(c+12,topY(c)-6,c+20,topY(c+20)+2);q.closePath();q._top=1;F.push(q)}
   else if(dt==='falcate'){const a=finAt(.36),b=finAt(.9);const p=new Path2D();p.moveTo(a,topY(a)+4);p.quadraticCurveTo(a+6,topY(a)-H0*.42,a+34,topY(a)-H0*.52);p.quadraticCurveTo(a+52,topY(a+40)-H0*.14,a+(b-a)*.45,topY(a+(b-a)*.45)-H0*.08);p.quadraticCurveTo(b-30,topY(b)-6,b,topY(b)+2);p.closePath();p._bb={ox:a+30,oy:topY(a+30)+20,x0:a,x1:b,ey:topY(a)-H0*.5};F.push(p)}
-  if(S.adipose){const c=finAt(.84);const q=new Path2D();q.moveTo(c,topY(c)+2);q.quadraticCurveTo(c+6,topY(c)-13,c+18,topY(c)-9);q.quadraticCurveTo(c+20,topY(c+18),c+22,topY(c+22)+2);q.closePath();q._a=.95;F.push(q)}
+  if(S.adipose){const c=finAt(.84);const q=new Path2D();q.moveTo(c,topY(c)+2);q.quadraticCurveTo(c+6,topY(c)-13,c+18,topY(c)-9);q.quadraticCurveTo(c+20,topY(c+18),c+22,topY(c+22)+2);q.closePath();q._a=.95;q._top=1;F.push(q)}
   const at=S.anal||'single';
   if(at==='sickle'){const c=finAt(.6),h=H0*(S.big2?.6:.3);const q=new Path2D();q.moveTo(c,botY(c)-4);q.quadraticCurveTo(c+6,botY(c)+h*.6,c+16,botY(c)+h);q.quadraticCurveTo(c+16,botY(c)+h*.35,c+40,botY(c+40)-3);q.closePath();q._bb={ox:c+8,oy:botY(c)-14,x0:c,x1:c+22,ey:botY(c)+h};F.push(q)}
   else if(at==='falcate'){const a=finAt(.42),b=finAt(.9);const q=new Path2D();q.moveTo(a,botY(a)-4);q.quadraticCurveTo(a+6,botY(a)+H0*.42,a+34,botY(a)+H0*.5);q.quadraticCurveTo(a+52,botY(a+40)+H0*.12,a+(b-a)*.45,botY(a+(b-a)*.45)+H0*.07);q.quadraticCurveTo(b-30,botY(b)+6,b,botY(b)-2);q.closePath();q._bb={ox:a+30,oy:botY(a+30)-20,x0:a,x1:b,ey:botY(a)+H0*.5};F.push(q)}
   else{const aa=finAt(.66),ab=finAt(.84);const q=new Path2D();q.moveTo(aa,botY(aa)-3);q.quadraticCurveTo(aa+14,botY(aa)+H0*.33,ab,botY(ab)-2);q.closePath();q._bb={ox:(aa+ab)/2,oy:botY(aa)-14,x0:aa,x1:ab+10,ey:botY(aa)+H0*.4};F.push(q)}
   if(S.minifin||L.finlets){}
   if(!S.noPelvic){const pa=finAt(.36);const q=new Path2D();q.moveTo(pa,botY(pa)-3);q.quadraticCurveTo(pa+20,botY(pa)+H0*.3,pa+42,botY(pa)+H0*.3);q.quadraticCurveTo(pa+30,botY(pa+30)+4,pa+30,botY(pa+30)-2);q.closePath();q._bb={ox:pa+6,oy:botY(pa)-8,x0:pa+20,x1:pa+50,ey:botY(pa)+H0*.35};F.push(q)}
-  return F}
+  F.forEach(f=>{if(f._bb&&!f._bb.tail&&f._bb.oy<CY)f._top=1});return F}
 
 let texC=null,scaleC=null,scaleDirty=true;
 function buildTexture(){texC=document.createElement('canvas');texC.width=W*LS;texC.height=H*LS;const c=texC.getContext('2d');c.scale(LS,LS);c.clip(bodyP);const r=seeded(99);
@@ -258,11 +258,11 @@ function finFill(path,alpha){ctx.save();ctx.globalAlpha=alpha;const b=ctx.create
   ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=2;ctx.stroke(path);ctx.restore();ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=1;ctx.stroke(path)}
 function shadeHex(h,d){const n=parseInt(h.slice(1),16);const f=c=>Math.max(0,Math.min(255,c+d));return `rgb(${f(n>>16)},${f(n>>8&255)},${f(n&255)})`}
 function drawShadow(){ctx.save();ctx.shadowColor='rgba(45,22,5,.5)';ctx.shadowBlur=22;ctx.shadowOffsetY=14;ctx.shadowOffsetX=6;ctx.fillStyle=L.body[1];ctx.fill(bodyP);ctx.fill(fins[0]);ctx.restore()}
-function drawFins(){
-  if(L.bill){const g=ctx.createLinearGradient(0,CY-7,0,CY+6);g.addColorStop(0,shadeHex(L.fin,50));g.addColorStop(1,L.fin);ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(X0+8,CY-7);ctx.quadraticCurveTo(X0-40,CY-4,X0-92,CY+1);ctx.quadraticCurveTo(X0-40,CY+4,X0+8,CY+5);ctx.closePath();ctx.fill()}
-  if(L.finlets){for(let t=.74;t<.985;t+=.035){const x=X0+t*LEN;for(const up of [1,-1]){const y=up>0?topY(x):botY(x);const g=ctx.createLinearGradient(x,y,x+7,y-up*11);g.addColorStop(0,'#c9971a');g.addColorStop(1,'#ffd95a');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(x-5,y+up*1);ctx.lineTo(x+7,y-up*11);ctx.lineTo(x+7,y+up*1);ctx.closePath();ctx.fill();ctx.strokeStyle='rgba(80,60,0,.5)';ctx.lineWidth=.8;ctx.stroke()}}}
-  fins.forEach(f=>finFill(f,f._a||.8));if(L.shape&&L.shape.filament){ctx.strokeStyle=L.fin;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X1+90,CY-L.H*.8);ctx.quadraticCurveTo(X1+120,CY-L.H*.95,X1+150,CY-L.H*.9);ctx.stroke()}
-  const px=X0+.22*LEN,py=CY+L.H*.12,pl=(L.shape&&L.shape.pecLong)?1.9:1;const pp=new Path2D();pp.moveTo(px,py);pp.quadraticCurveTo(px+40*pl,py+4,px+56*pl,py+20/pl+6);pp.quadraticCurveTo(px+24*pl,py+20,px,py+9);pp.closePath();pp._bb={ox:px,oy:py+4,x0:px+30,x1:px+58,ey:py+28};finFill(pp,.7);}
+function drawFins(part){part=part||'all';const okF=f=>part==='all'||(part==='top')===!!f._top;
+  if(L.bill&&part!=='top'){const g=ctx.createLinearGradient(0,CY-7,0,CY+6);g.addColorStop(0,shadeHex(L.fin,50));g.addColorStop(1,L.fin);ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(X0+8,CY-7);ctx.quadraticCurveTo(X0-40,CY-4,X0-92,CY+1);ctx.quadraticCurveTo(X0-40,CY+4,X0+8,CY+5);ctx.closePath();ctx.fill()}
+  if(L.finlets){for(let t=.74;t<.985;t+=.035){const x=X0+t*LEN;for(const up of [1,-1]){if(part!=='all'&&(part==='top')!==(up>0))continue;const y=up>0?topY(x):botY(x);const g=ctx.createLinearGradient(x,y,x+7,y-up*11);g.addColorStop(0,'#c9971a');g.addColorStop(1,'#ffd95a');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(x-5,y+up*1);ctx.lineTo(x+7,y-up*11);ctx.lineTo(x+7,y+up*1);ctx.closePath();ctx.fill();ctx.strokeStyle='rgba(80,60,0,.5)';ctx.lineWidth=.8;ctx.stroke()}}}
+  fins.forEach(f=>{if(okF(f))finFill(f,f._a||.8)});if(part!=='top'&&L.shape&&L.shape.filament){ctx.strokeStyle=L.fin;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(X1+90,CY-L.H*.8);ctx.quadraticCurveTo(X1+120,CY-L.H*.95,X1+150,CY-L.H*.9);ctx.stroke()}
+  if(part==='top')return;const px=X0+.22*LEN,py=CY+L.H*.12,pl=(L.shape&&L.shape.pecLong)?1.9:1;const pp=new Path2D();pp.moveTo(px,py);pp.quadraticCurveTo(px+40*pl,py+4,px+56*pl,py+20/pl+6);pp.quadraticCurveTo(px+24*pl,py+20,px,py+9);pp.closePath();pp._bb={ox:px,oy:py+4,x0:px+30,x1:px+58,ey:py+28};finFill(pp,.7);}
 function drawScales(){if(scaleDirty)renderScales();ctx.drawImage(scaleC,0,0,W,H)}
 function drawScalesOld(){const r=L.sc*.82;ctx.lineWidth=1.1;for(const c of cells){if(c.s<.04)continue;ctx.globalAlpha=c.s;ctx.beginPath();ctx.arc(c.x,c.y,r,-1.2,1.2);ctx.fillStyle=L.sf;ctx.fill();ctx.strokeStyle=L.sl;ctx.stroke();ctx.beginPath();ctx.arc(c.x-1,c.y,r-1.6,-1.1,-.2);ctx.strokeStyle='rgba(255,255,255,.45)';ctx.stroke()}ctx.globalAlpha=1}
 function drawBodyBase(withScales){
@@ -312,7 +312,7 @@ function drawReveal(){
   const e=1-Math.pow(1-revealT,3),lift=95*e;
   // carcass
   ctx.save();const comp=new Path2D();comp.addPath(bodyP);comp.addPath(filP);
-  drawFins();
+  drawFins('bottom');
   ctx.clip(comp,'evenodd');drawBodyBase(true);
   // exposed flesh band + waste
   for(let x=SP0;x<=X1;x+=2){const c=cutYf(x),s=spineY(x);
@@ -325,7 +325,7 @@ function drawReveal(){
   ctx.strokeStyle='rgba(150,130,100,.6)';ctx.lineWidth=1;for(let x=SP0+6;x<X1;x+=9){const y=spineY(x);ctx.beginPath();ctx.moveTo(x,y-3);ctx.lineTo(x,y+3);ctx.stroke()}
   ctx.restore();
   // fillet lifted
-  ctx.save();ctx.translate(0,-lift);
+  ctx.save();ctx.translate(0,-lift);drawFins('top');
   ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=12*e;ctx.shadowOffsetY=6*e;ctx.fillStyle='#000';ctx.fill(filP);ctx.shadowColor='transparent';
   ctx.save();ctx.clip(filP);drawBodyBase(true);ctx.restore();
   ctx.strokeStyle=(L.flesh||FLESH)[1];ctx.lineWidth=4;ctx.beginPath();for(let x=SP0;x<=X1;x+=2){const y=cutYf(x);x===SP0?ctx.moveTo(x,y):ctx.lineTo(x,y)}ctx.stroke();
